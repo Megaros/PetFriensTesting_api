@@ -1,13 +1,12 @@
 import requests
 
-from sittings import valid_password, valid_email
-
-
 class PetFrands:
     def __init__(self):
         self.base_url = 'https://petfriends.skillfactory.ru/'
 
     def get_api_key(self, email, password):
+        """Метод делает запрос к API сервера и возвращает статус запроса и результат в формате JSON
+        c уникальным ключем пользователяб, найденого по указанным email и паролем"""
         headers = {
             'email': email,
             'password': password
@@ -21,5 +20,13 @@ class PetFrands:
             result = res.text
         return status, result
 
-pf = PetFrands()
-print(pf.get_api_key(email=valid_email, password=valid_password))
+    def get_list_of_pets(self, auth_key, filter):
+        headers = {'auth_key': auth_key}
+        filter = {'filter': filter}
+        res = requests.get(self.base_url+'api/pets', headers=headers, params=filter)
+        status = res.status_code
+        try:
+            result = res.json()
+        except:
+            result = res.text
+        return status, result
